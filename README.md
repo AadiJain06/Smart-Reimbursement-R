@@ -34,7 +34,7 @@ odoo/
 │   │   └── server.ts
 │   ├── uploads/          # created at runtime for receipts
 │   ├── package.json
-│   └── .env.example
+│   └── .env
 └── frontend/
     ├── src/
     │   ├── components/
@@ -45,7 +45,7 @@ odoo/
     │   ├── App.tsx
     │   └── main.tsx
     ├── package.json
-    └── .env.example
+    └── .env
 ```
 
 ## Prerequisites
@@ -83,10 +83,6 @@ npm run dev
 ```
 
 App runs at `http://localhost:5173` by default.
-
-## Deployment
-
-See **[DEPLOY.md](./DEPLOY.md)** for production build commands, environment variables (`VITE_API_URL`, `FRONTEND_URL`), migrations (`prisma migrate deploy`), and notes on SQLite vs PostgreSQL.
 
 ## Features
 
