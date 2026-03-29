@@ -50,12 +50,14 @@ export async function createExpense(input: {
   const submitter = await prisma.user.findUnique({
     where: { id: input.submitterId },
   });
-  return findExpenseById(
+  const full = await findExpenseById(
     expense.id,
     input.submitterId,
     submitter?.role ?? UserRole.EMPLOYEE,
     input.companyId
   );
+  if (!full) throw new Error('Failed to load created expense');
+  return full;
 }
 
 const expenseInclude: Prisma.ExpenseInclude = {

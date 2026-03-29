@@ -8,6 +8,7 @@ import {
 import type { AuthRequest } from '../middleware/auth.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { publicUploadPath } from '../utils/upload.js';
+import { realtime } from '../realtime.js';
 
 const createSchema = z.object({
   amount: z.coerce.number().positive(),
@@ -36,6 +37,10 @@ export const postExpense = asyncHandler(async (req: AuthRequest, res: Response) 
     receiptPath,
     approvalRuleId: body.approvalRuleId ?? null,
     ocrMetadata: body.ocrMetadata ?? null,
+  });
+  realtime.emitExpenseUpdate(req.user!.companyId, {
+    type: 'created',
+    expenseId: expense.id,
   });
   res.status(201).json(expense);
 });
