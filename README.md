@@ -120,13 +120,18 @@ App runs at `http://localhost:5173` by default.
 | POST | `/api/ocr/scan` | OCR receipt |
 | GET | `/api/meta/countries` | Countries + currencies (proxied) |
 
-## Git Workflow (suggested)
+## Git Workflow
+
+This repo was initialized with feature branches:
+
+- `feature/backend-setup` — API, Prisma, workflows, OCR
+- `feature/frontend-ui` — Vite app, Tailwind, Zustand
+
+Merge both into `main` for the full stack.
 
 ```bash
-git checkout -b feature/backend-setup
-# commit...
-git checkout -b feature/frontend-ui
-# commit...
+git checkout main
+git log --oneline --graph --all -10
 ```
 
 ## License
