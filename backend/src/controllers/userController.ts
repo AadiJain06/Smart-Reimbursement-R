@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { Response } from 'express';
-import { UserRole } from '@prisma/client';
+import { UserRole } from '../types/enums.js';
 import { createUser, listUsers } from '../services/userService.js';
 import type { AuthRequest } from '../middleware/auth.js';
 import { asyncHandler } from '../utils/asyncHandler.js';

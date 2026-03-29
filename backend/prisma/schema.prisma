@@ -3,38 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
-}
-
-enum UserRole {
-  ADMIN
-  MANAGER
-  EMPLOYEE
-}
-
-enum ExpenseStatus {
-  PENDING
-  APPROVED
-  REJECTED
-}
-
-enum ApprovalStepStatus {
-  WAITING
-  PENDING
-  APPROVED
-  REJECTED
-  SKIPPED
-}
-
-enum ApprovalLogAction {
-  SUBMITTED
-  APPROVED
-  REJECTED
-  ESCALATED
-  OVERRIDE_APPROVED
-  OVERRIDE_REJECTED
-  COMMENT
 }
 
 model Company {
@@ -55,7 +25,8 @@ model User {
   email        String
   passwordHash String
   name         String
-  role         UserRole
+  /// ADMIN | MANAGER | EMPLOYEE
+  role         String
   companyId    String
   company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
   managerId    String?
@@ -77,8 +48,8 @@ model ApprovalRule {
   company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
   name        String
   isDefault   Boolean  @default(false)
-  /// JSON: WorkflowDefinition — sequential blocks, parallel gates, hybrid rules
-  definition  Json
+  /// JSON string — WorkflowDefinition
+  definition  String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -88,25 +59,26 @@ model ApprovalRule {
 }
 
 model Expense {
-  id                      String        @id @default(uuid())
-  amount                  Decimal       @db.Decimal(18, 4)
+  id                      String   @id @default(uuid())
+  amount                  Decimal
   currency                String
-  amountInCompanyCurrency Decimal       @db.Decimal(18, 4)
+  amountInCompanyCurrency Decimal
   category                String
   description             String?
   date                    DateTime
   receiptPath             String?
-  status                  ExpenseStatus @default(PENDING)
+  /// PENDING | APPROVED | REJECTED
+  status                  String   @default("PENDING")
   companyId               String
-  company                 Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company                 Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
   submitterId             String
-  submitter               User          @relation("ExpenseSubmitter", fields: [submitterId], references: [id])
+  submitter               User     @relation("ExpenseSubmitter", fields: [submitterId], references: [id])
   approvalRuleId          String?
   approvalRule            ApprovalRule? @relation(fields: [approvalRuleId], references: [id])
-  /// Tracks current block index for sequential + conditional engine
   workflowPhase           String?       @default("sequential")
   currentBlockIndex       Int           @default(0)
-  metadata                Json?
+  /// JSON string (OCR metadata)
+  metadata                String?
   createdAt               DateTime      @default(now())
   updatedAt               DateTime      @updatedAt
 
@@ -118,38 +90,39 @@ model Expense {
   @@index([status])
 }
 
-/// Per-expense workflow instance: sequential steps and/or parallel groups
 model ApprovalStep {
-  id                String              @id @default(uuid())
+  id                String    @id @default(uuid())
   expenseId         String
-  expense           Expense             @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  expense           Expense   @relation(fields: [expenseId], references: [id], onDelete: Cascade)
   blockIndex        Int
   stepIndex         Int
-  /// Same stepIndex, different parallelSlot = parallel approvers (percentage rules)
-  parallelSlot      Int                 @default(0)
+  parallelSlot      Int       @default(0)
   approverUserId    String?
-  approver          User?               @relation("StepApprover", fields: [approverUserId], references: [id])
-  requiredRole      UserRole?
+  approver          User?     @relation("StepApprover", fields: [approverUserId], references: [id])
+  /// ADMIN | MANAGER | EMPLOYEE when pool-based
+  requiredRole      String?
   label             String?
-  status            ApprovalStepStatus  @default(WAITING)
+  /// WAITING | PENDING | APPROVED | REJECTED | SKIPPED
+  status            String    @default("WAITING")
   decidedAt         DateTime?
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
   @@index([expenseId])
   @@index([approverUserId])
 }
 
 model ApprovalLog {
-  id         String             @id @default(uuid())
+  id         String   @id @default(uuid())
   expenseId  String
-  expense    Expense            @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  expense    Expense  @relation(fields: [expenseId], references: [id], onDelete: Cascade)
   actorId    String?
-  actor      User?              @relation(fields: [actorId], references: [id])
-  action     ApprovalLogAction
+  actor      User?    @relation(fields: [actorId], references: [id])
+  /// SUBMITTED | APPROVED | REJECTED | ...
+  action     String
   comment    String?
-  metadata   Json?
-  createdAt  DateTime           @default(now())
+  metadata   String?
+  createdAt  DateTime @default(now())
 
   @@index([expenseId])
 }

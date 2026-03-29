@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { prisma } from '../config/database.js';
-import type { UserRole } from '@prisma/client';
+import type { UserRole } from '../types/enums.js';
 
 const SALT_ROUNDS = 10;
 

@@ -8,7 +8,7 @@ A production-oriented expense reimbursement platform with multi-level and condit
 |-------|------------|
 | Frontend | React 18 (Vite), Tailwind CSS, Zustand, React Router, React Hook Form, Zod, Recharts |
 | Backend | Node.js, Express, Prisma ORM |
-| Database | PostgreSQL |
+| Database | SQLite (file) |
 | Auth | JWT (access tokens) |
 | OCR | Tesseract.js |
 | Real-time | Socket.IO |
@@ -51,29 +51,22 @@ odoo/
 ## Prerequisites
 
 - Node.js 20+
-- PostgreSQL 14+
 - npm or pnpm
 
 ## Setup
 
-### 1. Database
+### 1. Backend (SQLite)
 
-Create a database and user (example):
+The default `DATABASE_URL` is `file:./prisma/dev.db` under `backend/` (the file is created when you run migrations). No separate database server is required.
 
-```sql
-CREATE DATABASE smart_reimburse;
-CREATE USER reimburse WITH PASSWORD 'yourpassword';
-GRANT ALL PRIVILEGES ON DATABASE smart_reimburse TO reimburse;
-```
-
-### 2. Backend
+Workflow definitions and OCR metadata are stored as JSON **strings** in SQLite; roles and statuses are stored as strings, with the same values as before (`ADMIN`, `PENDING`, etc.).
 
 ```bash
 cd backend
 cp .env.example .env
-# Edit .env: DATABASE_URL, JWT_SECRET, FRONTEND_URL
+# Set JWT_SECRET; optional: FRONTEND_URL, PORT
 npm install
-npx prisma migrate dev --name init
+npx prisma migrate dev
 npm run seed
 npm run dev
 ```
@@ -90,6 +83,10 @@ npm run dev
 ```
 
 App runs at `http://localhost:5173` by default.
+
+## Deployment
+
+See **[DEPLOY.md](./DEPLOY.md)** for production build commands, environment variables (`VITE_API_URL`, `FRONTEND_URL`), migrations (`prisma migrate deploy`), and notes on SQLite vs PostgreSQL.
 
 ## Features
 

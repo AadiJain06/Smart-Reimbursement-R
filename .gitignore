@@ -3,6 +3,8 @@ dist/
 .env
 .env.local
 uploads/
+backend/prisma/*.db
+backend/prisma/*.db-journal
 *.log
 *.tsbuildinfo
 .DS_Store

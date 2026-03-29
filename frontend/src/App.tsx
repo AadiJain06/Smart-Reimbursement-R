@@ -26,7 +26,8 @@ function Protected({ children }: { children: React.ReactNode }) {
   if (!token) return <Navigate to="/login" replace />;
   if (!user) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-slate-400">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-3 bg-zinc-50 text-sm text-zinc-500">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-700" />
         Restoring session…
       </div>
     );

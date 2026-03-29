@@ -50,51 +50,55 @@ export function ExpenseHistory() {
   useExpenseSocket(load);
 
   return (
-    <div>
-      <h1 className="font-display text-3xl font-bold text-white">Expense history</h1>
-      <p className="mt-2 text-slate-400">All expenses visible for your role.</p>
+    <div className="ui-page">
+      <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">Expense history</h1>
+      <p className="mt-2 text-sm text-zinc-500">
+        Everything you’re allowed to see for your role, in one place.
+      </p>
 
       {loading ? (
-        <p className="mt-8 text-slate-500">Loading…</p>
+        <p className="mt-10 text-sm text-zinc-500">Loading…</p>
       ) : (
-        <div className="mt-8 overflow-x-auto rounded-xl border border-slate-800">
-          <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-800 bg-slate-900/80 text-slate-400">
+        <div className="ui-table-wrap mt-8">
+          <table className="ui-table">
+            <thead>
               <tr>
-                <th className="px-4 py-3">Date</th>
-                <th className="px-4 py-3">Category</th>
-                <th className="px-4 py-3">Amount</th>
-                <th className="px-4 py-3">{company?.defaultCurrency}</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Receipt</th>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>{company?.defaultCurrency}</th>
+                <th>Status</th>
+                <th>Receipt</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((e) => (
-                <tr key={e.id} className="border-b border-slate-800/80 hover:bg-slate-900/50">
-                  <td className="px-4 py-3">{new Date(e.date).toLocaleDateString()}</td>
-                  <td className="px-4 py-3">{e.category}</td>
-                  <td className="px-4 py-3">
+                <tr key={e.id}>
+                  <td className="whitespace-nowrap text-zinc-600">
+                    {new Date(e.date).toLocaleDateString()}
+                  </td>
+                  <td className="font-medium text-zinc-900">{e.category}</td>
+                  <td className="tabular-nums">
                     {e.amount} {e.currency}
                   </td>
-                  <td className="px-4 py-3 text-slate-400">
+                  <td className="tabular-nums text-zinc-600">
                     {Number(e.amountInCompanyCurrency).toFixed(2)}
                   </td>
-                  <td className="px-4 py-3">
+                  <td>
                     <StatusBadge status={e.status} />
                   </td>
-                  <td className="px-4 py-3">
+                  <td>
                     {e.receiptPath ? (
                       <a
                         href={e.receiptPath}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-brand-400 hover:underline"
+                        className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
                       >
                         View
                       </a>
                     ) : (
-                      '—'
+                      <span className="text-zinc-400">—</span>
                     )}
                   </td>
                 </tr>
@@ -102,7 +106,7 @@ export function ExpenseHistory() {
             </tbody>
           </table>
           {rows.length === 0 && (
-            <p className="p-8 text-center text-slate-500">No expenses found.</p>
+            <p className="p-10 text-center text-sm text-zinc-500">No expenses found.</p>
           )}
         </div>
       )}

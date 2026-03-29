@@ -1,8 +1,8 @@
 import bcrypt from 'bcryptjs';
 import { prisma } from '../config/database.js';
 import { signToken } from '../utils/jwt.js';
+import type { UserRole } from '../types/enums.js';
 import { getDefaultCurrencyForCountry } from './countryService.js';
-import type { UserRole } from '@prisma/client';
 
 const SALT_ROUNDS = 10;
 
@@ -38,12 +38,12 @@ export async function signup(input: {
         companyId: company.id,
         name: 'Default sequential',
         isDefault: true,
-        definition: {
+        definition: JSON.stringify({
           sequential: [
             { assignee: 'role:MANAGER', label: 'Manager' },
             { assignee: 'role:ADMIN', label: 'Finance / Admin' },
           ],
-        },
+        }),
       },
     });
     return { company, admin, defaultRule };
@@ -52,7 +52,7 @@ export async function signup(input: {
   const token = signToken({
     sub: result.admin.id,
     companyId: result.company.id,
-    role: result.admin.role,
+    role: result.admin.role as UserRole,
   });
 
   return {
@@ -84,7 +84,7 @@ export async function login(email: string, password: string) {
   const token = signToken({
     sub: user.id,
     companyId: user.companyId,
-    role: user.role,
+    role: user.role as UserRole,
   });
 
   return {

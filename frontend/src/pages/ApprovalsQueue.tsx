@@ -72,59 +72,62 @@ export function ApprovalsQueue() {
   };
 
   if (user?.role === 'EMPLOYEE') {
-    return <p className="text-slate-400">Approvals are for managers and admins.</p>;
+    return (
+      <p className="text-sm text-zinc-500">Approvals are available to managers and administrators.</p>
+    );
   }
 
   return (
-    <div>
-      <h1 className="font-display text-3xl font-bold text-white">Approvals queue</h1>
-      <p className="mt-2 text-slate-400">Sequential and parallel steps assigned to you.</p>
+    <div className="ui-page">
+      <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">Approvals</h1>
+      <p className="mt-2 text-sm text-zinc-500">
+        Sequential and parallel steps where you’re the assigned approver.
+      </p>
 
       {loading ? (
-        <p className="mt-8 text-slate-500">Loading…</p>
+        <p className="mt-10 text-sm text-zinc-500">Loading…</p>
       ) : (
-        <div className="mt-8 space-y-4">
+        <div className="mt-8 space-y-3">
           {pending.map((s) => {
             const e = s.expense;
             return (
               <div
                 key={s.id}
-                className="flex flex-col gap-4 rounded-2xl border border-slate-800 bg-slate-900/40 p-5 sm:flex-row sm:items-center sm:justify-between"
+                className="ui-card flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:justify-between"
               >
-                <div>
-                  <p className="font-medium text-white">
-                    {e.category} · {e.amount} {e.currency}
+                <div className="min-w-0">
+                  <p className="font-medium text-zinc-900">
+                    {e.category}{' '}
+                    <span className="font-normal text-zinc-500">
+                      · {e.amount} {e.currency}
+                    </span>
                   </p>
-                  <p className="text-sm text-slate-500">
+                  <p className="mt-1 text-sm text-zinc-500">
                     {e.submitter.name} · {new Date(e.date).toLocaleDateString()}
                   </p>
                   {e.description && (
-                    <p className="mt-1 text-sm text-slate-400">{e.description}</p>
+                    <p className="mt-2 line-clamp-2 text-sm text-zinc-600">{e.description}</p>
                   )}
-                  <div className="mt-2">
+                  <div className="mt-3">
                     <StatusBadge status={e.status} />
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex shrink-0 flex-wrap gap-2">
                   <button
                     type="button"
                     onClick={() => setModal({ id: e.id, mode: 'approve' })}
-                    className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500"
+                    className="rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-emerald-500"
                   >
                     Approve
                   </button>
                   <button
                     type="button"
                     onClick={() => setModal({ id: e.id, mode: 'reject' })}
-                    className="rounded-xl border border-rose-500/50 px-4 py-2 text-sm text-rose-300 hover:bg-rose-950/50"
+                    className="rounded-lg border border-zinc-200 bg-white px-3.5 py-2 text-sm font-medium text-rose-700 shadow-sm transition hover:bg-rose-50"
                   >
                     Reject
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => escalate(e.id)}
-                    className="rounded-xl border border-slate-600 px-4 py-2 text-sm text-slate-300 hover:bg-slate-800"
-                  >
+                  <button type="button" onClick={() => escalate(e.id)} className="ui-btn-secondary">
                     Escalate
                   </button>
                 </div>
@@ -132,9 +135,9 @@ export function ApprovalsQueue() {
             );
           })}
           {pending.length === 0 && (
-            <p className="rounded-xl border border-dashed border-slate-700 p-8 text-center text-slate-500">
-              No pending approvals.
-            </p>
+            <div className="rounded-xl border border-dashed border-zinc-300 bg-zinc-50/50 py-14 text-center">
+              <p className="text-sm text-zinc-500">You’re all caught up — no pending approvals.</p>
+            </div>
           )}
         </div>
       )}
@@ -145,17 +148,13 @@ export function ApprovalsQueue() {
         onClose={() => setModal(null)}
       >
         <textarea
-          className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white"
+          className="ui-textarea"
           placeholder="Comment (optional)"
           rows={3}
           value={comment}
           onChange={(e) => setComment(e.target.value)}
         />
-        <button
-          type="button"
-          onClick={act}
-          className="mt-4 w-full rounded-xl bg-brand-600 py-2.5 font-medium text-white"
-        >
+        <button type="button" onClick={act} className="ui-btn-primary mt-4 w-full">
           Confirm
         </button>
       </Modal>

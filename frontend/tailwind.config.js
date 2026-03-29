@@ -4,22 +4,39 @@ export default {
   theme: {
     extend: {
       colors: {
-        brand: {
-          50: '#eef8ff',
-          100: '#d8eeff',
-          500: '#0d8bd9',
-          600: '#0a6fb3',
-          900: '#063454',
-        },
-        surface: {
-          DEFAULT: '#0f1419',
-          card: '#1a222c',
-          muted: '#8899a8',
+        accent: {
+          50: '#eef2ff',
+          100: '#e0e7ff',
+          500: '#6366f1',
+          600: '#4f46e5',
+          700: '#4338ca',
         },
       },
       fontFamily: {
-        sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
-        display: ['"Outfit"', 'system-ui', 'sans-serif'],
+        sans: [
+          'Inter',
+          'ui-sans-serif',
+          'system-ui',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'sans-serif',
+        ],
+        display: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
+      boxShadow: {
+        card: '0 1px 2px 0 rgb(0 0 0 / 0.04), 0 1px 3px 0 rgb(0 0 0 / 0.06)',
+        'card-hover': '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05)',
+        sidebar: '1px 0 0 0 rgb(0 0 0 / 0.06)',
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.2s ease-out',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0', transform: 'translateY(4px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
       },
     },
   },

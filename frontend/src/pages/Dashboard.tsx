@@ -62,50 +62,44 @@ export function Dashboard() {
     })) ?? [];
 
   return (
-    <div className="space-y-10">
+    <div className="ui-page space-y-8">
       <div>
-        <h1 className="font-display text-3xl font-bold text-white">
+        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
           Hello, {user?.name?.split(' ')[0]}
         </h1>
-        <p className="mt-2 text-slate-400">
-          Company currency: <span className="text-brand-400">{company?.defaultCurrency}</span>
-          {user?.role === 'EMPLOYEE' && ' — submit receipts and track status.'}
-          {user?.role === 'MANAGER' && ' — review your team and pending approvals.'}
-          {user?.role === 'ADMIN' && ' — manage users, rules, and overrides.'}
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-500">
+          Base currency <span className="font-medium text-zinc-800">{company?.defaultCurrency}</span>
+          {user?.role === 'EMPLOYEE' && ' — submit receipts and track every claim.'}
+          {user?.role === 'MANAGER' && ' — review your team and clear the approval queue.'}
+          {user?.role === 'ADMIN' && ' — manage people, rules, and company-wide spend.'}
         </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-5">
-          <div className="flex items-center gap-2 text-slate-400">
-            <Wallet className="h-4 w-4" />
-            Recent expenses
+        <div className="ui-card p-6">
+          <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
+            <Wallet className="h-4 w-4 text-zinc-400" strokeWidth={1.75} />
+            Recent
           </div>
-          <p className="mt-2 font-display text-2xl font-semibold text-white">{expenses.length}</p>
-          <p className="text-xs text-slate-500">Showing latest 8</p>
+          <p className="mt-3 text-3xl font-semibold tabular-nums text-zinc-900">{expenses.length}</p>
+          <p className="mt-1 text-xs text-zinc-500">Latest eight expenses in view</p>
         </div>
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-5 sm:col-span-2">
+        <div className="ui-card p-6 sm:col-span-2">
           <div className="flex items-center justify-between">
-            <span className="text-slate-400">Quick actions</span>
+            <span className="text-sm font-medium text-zinc-700">Quick actions</span>
             <Link
               to="/submit"
-              className="inline-flex items-center gap-1 text-sm font-medium text-brand-400 hover:text-brand-300"
+              className="inline-flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-500"
             >
               New expense <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-          <div className="mt-4 flex flex-wrap gap-2">
-            <Link
-              to="/submit"
-              className="rounded-xl bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-500"
-            >
+          <div className="mt-5 flex flex-wrap gap-2">
+            <Link to="/submit" className="ui-btn-primary">
               Submit expense
             </Link>
             {(user?.role === 'ADMIN' || user?.role === 'MANAGER') && (
-              <Link
-                to="/approvals"
-                className="rounded-xl border border-slate-600 px-4 py-2 text-sm text-slate-200 hover:bg-slate-800"
-              >
+              <Link to="/approvals" className="ui-btn-secondary">
                 Open approvals
               </Link>
             )}
@@ -114,19 +108,33 @@ export function Dashboard() {
       </div>
 
       {(user?.role === 'ADMIN' || user?.role === 'MANAGER') && chartData.length > 0 && (
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6">
-          <h2 className="font-display text-lg font-semibold text-white">Spend by category</h2>
-          <div className="mt-4 h-64">
+        <div className="ui-card p-6">
+          <h2 className="text-sm font-semibold text-zinc-900">Spend by category</h2>
+          <div className="mt-6 h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} />
-                <YAxis stroke="#94a3b8" fontSize={12} />
-                <Tooltip
-                  contentStyle={{ background: '#0f172a', border: '1px solid #334155' }}
-                  labelStyle={{ color: '#e2e8f0' }}
+              <BarChart data={chartData} margin={{ top: 4, right: 8, left: -8, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" vertical={false} />
+                <XAxis
+                  dataKey="name"
+                  tick={{ fill: '#71717a', fontSize: 12 }}
+                  axisLine={false}
+                  tickLine={false}
                 />
-                <Bar dataKey="total" fill="#0d8bd9" radius={[4, 4, 0, 0]} />
+                <YAxis
+                  tick={{ fill: '#71717a', fontSize: 12 }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <Tooltip
+                  cursor={{ fill: '#fafafa' }}
+                  contentStyle={{
+                    borderRadius: '8px',
+                    border: '1px solid #e4e4e7',
+                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.07)',
+                  }}
+                  labelStyle={{ fontWeight: 600, color: '#18181b' }}
+                />
+                <Bar dataKey="total" fill="#4f46e5" radius={[4, 4, 0, 0]} maxBarSize={48} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -134,35 +142,35 @@ export function Dashboard() {
       )}
 
       <div>
-        <h2 className="font-display text-lg font-semibold text-white">Recent activity</h2>
+        <h2 className="text-sm font-semibold text-zinc-900">Recent activity</h2>
         {loading ? (
-          <p className="mt-4 text-slate-500">Loading…</p>
+          <p className="mt-6 text-sm text-zinc-500">Loading…</p>
         ) : (
-          <div className="mt-4 overflow-x-auto rounded-xl border border-slate-800">
-            <table className="w-full text-left text-sm">
-              <thead className="border-b border-slate-800 bg-slate-900/80 text-slate-400">
+          <div className="ui-table-wrap mt-4">
+            <table className="ui-table">
+              <thead>
                 <tr>
-                  <th className="px-4 py-3 font-medium">Date</th>
-                  <th className="px-4 py-3 font-medium">Category</th>
-                  <th className="px-4 py-3 font-medium">Amount</th>
-                  <th className="px-4 py-3 font-medium">In {company?.defaultCurrency}</th>
-                  <th className="px-4 py-3 font-medium">Status</th>
+                  <th>Date</th>
+                  <th>Category</th>
+                  <th>Amount</th>
+                  <th>In {company?.defaultCurrency}</th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody>
                 {expenses.map((e) => (
-                  <tr key={e.id} className="border-b border-slate-800/80 hover:bg-slate-900/50">
-                    <td className="px-4 py-3 text-slate-300">
+                  <tr key={e.id}>
+                    <td className="whitespace-nowrap text-zinc-600">
                       {new Date(e.date).toLocaleDateString()}
                     </td>
-                    <td className="px-4 py-3">{e.category}</td>
-                    <td className="px-4 py-3">
+                    <td className="font-medium text-zinc-900">{e.category}</td>
+                    <td className="tabular-nums">
                       {e.amount} {e.currency}
                     </td>
-                    <td className="px-4 py-3 text-slate-400">
+                    <td className="tabular-nums text-zinc-600">
                       {Number(e.amountInCompanyCurrency).toFixed(2)}
                     </td>
-                    <td className="px-4 py-3">
+                    <td>
                       <StatusBadge status={e.status} />
                     </td>
                   </tr>
@@ -170,7 +178,7 @@ export function Dashboard() {
               </tbody>
             </table>
             {expenses.length === 0 && (
-              <p className="p-6 text-center text-slate-500">No expenses yet.</p>
+              <p className="p-10 text-center text-sm text-zinc-500">No expenses yet.</p>
             )}
           </div>
         )}

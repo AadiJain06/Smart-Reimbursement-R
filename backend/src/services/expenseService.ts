@@ -1,5 +1,6 @@
-import { ExpenseStatus, Prisma, UserRole } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { prisma } from '../config/database.js';
+import { ExpenseStatus, UserRole } from '../types/enums.js';
 import { convertToCurrency } from './currencyService.js';
 import { seedWorkflowStepsForExpense } from './approvalWorkflowService.js';
 
@@ -41,7 +42,7 @@ export async function createExpense(input: {
       status: ExpenseStatus.PENDING,
       workflowPhase: 'sequential',
       metadata: input.ocrMetadata
-        ? (input.ocrMetadata as Prisma.InputJsonValue)
+        ? JSON.stringify(input.ocrMetadata)
         : undefined,
     },
   });
@@ -53,7 +54,7 @@ export async function createExpense(input: {
   const full = await findExpenseById(
     expense.id,
     input.submitterId,
-    submitter?.role ?? UserRole.EMPLOYEE,
+    (submitter?.role as UserRole | undefined) ?? UserRole.EMPLOYEE,
     input.companyId
   );
   if (!full) throw new Error('Failed to load created expense');

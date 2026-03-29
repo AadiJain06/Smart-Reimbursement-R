@@ -19,7 +19,7 @@ export async function createRule(input: {
       companyId: input.companyId,
       name: input.name,
       isDefault: !!input.isDefault,
-      definition,
+      definition: JSON.stringify(definition),
     },
   });
 }

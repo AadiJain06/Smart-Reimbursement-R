@@ -77,7 +77,7 @@ async function main() {
       companyId: company.id,
       name: 'Default sequential + optional parallel',
       isDefault: true,
-      definition: {
+      definition: JSON.stringify({
         sequential: [
           { assignee: 'role:MANAGER', label: 'Manager' },
           { assignee: 'role:ADMIN', label: 'Finance' },
@@ -87,7 +87,7 @@ async function main() {
           percentageThreshold: 60,
           orUserIds: [admin.id],
         },
-      },
+      }),
     },
     update: {},
   });

@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import { verifyToken, type JwtPayload } from '../utils/jwt.js';
-import type { UserRole } from '@prisma/client';
+import type { UserRole } from '../types/enums.js';
 
 export type AuthRequest = Request & { user?: JwtPayload };
 

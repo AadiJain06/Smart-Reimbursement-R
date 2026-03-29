@@ -1,11 +1,10 @@
+import type { Prisma } from '@prisma/client';
+import { prisma } from '../config/database.js';
 import {
   ApprovalLogAction,
   ApprovalStepStatus,
   ExpenseStatus,
-  Prisma,
-  UserRole,
-} from '@prisma/client';
-import { prisma } from '../config/database.js';
+} from '../types/enums.js';
 import { workflowDefinitionSchema, type WorkflowDefinition } from './workflowTypes.js';
 
 function parseDefinition(raw: unknown): WorkflowDefinition {
@@ -17,7 +16,7 @@ function parseDefinition(raw: unknown): WorkflowDefinition {
 export async function resolveAssignee(
   assignee: string,
   ctx: { companyId: string; submitterId: string }
-): Promise<{ userId: string | null; requiredRole: UserRole | null }> {
+): Promise<{ userId: string | null; requiredRole: string | null }> {
   if (assignee.startsWith('user:')) {
     const id = assignee.slice(5);
     const u = await prisma.user.findFirst({
@@ -75,7 +74,7 @@ export async function seedWorkflowStepsForExpense(expenseId: string) {
   }
   if (!rule) throw new Error('No approval rule configured');
 
-  const def = parseDefinition(rule.definition);
+  const def = parseDefinition(JSON.parse(rule.definition));
   const sequential = def.sequential ?? [];
   const gate = def.parallelGate;
 
@@ -181,7 +180,7 @@ async function createParallelStepsTx(
 
 async function userMatchesStep(
   actorId: string,
-  step: { approverUserId: string | null; requiredRole: UserRole | null },
+  step: { approverUserId: string | null; requiredRole: string | null },
   companyId: string
 ) {
   if (step.approverUserId && step.approverUserId === actorId) return true;
@@ -211,7 +210,7 @@ export async function processApproval(
   }
 
   const def = expense.approvalRule
-    ? parseDefinition(expense.approvalRule.definition)
+    ? parseDefinition(JSON.parse(expense.approvalRule.definition))
     : { sequential: [], parallelGate: undefined };
 
   const stepToUse = await findPendingStepForActor(
@@ -295,9 +294,9 @@ async function findPendingStepForActor(
   steps: {
     id: string;
     blockIndex: number;
-    status: ApprovalStepStatus;
+    status: string;
     approverUserId: string | null;
-    requiredRole: UserRole | null;
+    requiredRole: string | null;
   }[],
   actorId: string,
   companyId: string

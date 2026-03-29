@@ -2,6 +2,84 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  @apply min-h-screen bg-slate-950 text-slate-100;
+@layer base {
+  html {
+    @apply scroll-smooth antialiased;
+  }
+  body {
+    @apply min-h-screen bg-zinc-50 text-zinc-900;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+}
+
+@layer components {
+  /* Stripe/Notion-style surface */
+  .ui-page {
+    @apply animate-fade-in;
+  }
+
+  .ui-card {
+    @apply rounded-xl border border-zinc-200/80 bg-white shadow-card;
+  }
+
+  .ui-card-muted {
+    @apply rounded-xl border border-zinc-200/60 bg-zinc-50/80;
+  }
+
+  .ui-label {
+    @apply block text-sm font-medium text-zinc-700;
+  }
+
+  .ui-input {
+    @apply mt-1.5 w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 shadow-sm transition placeholder:text-zinc-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/15;
+  }
+
+  .ui-textarea {
+    @apply mt-1.5 w-full resize-y rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 shadow-sm placeholder:text-zinc-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/15;
+  }
+
+  .ui-select {
+    @apply mt-1.5 w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/15;
+  }
+
+  /* Primary CTA — dark like Stripe Docs / Notion */
+  .ui-btn-primary {
+    @apply inline-flex items-center justify-center rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-zinc-800 focus-visible:outline focus-visible:ring-2 focus-visible:ring-zinc-900/25 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-45;
+  }
+
+  .ui-btn-secondary {
+    @apply inline-flex items-center justify-center rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 shadow-sm transition hover:border-zinc-300 hover:bg-zinc-50 focus-visible:outline focus-visible:ring-2 focus-visible:ring-zinc-900/10;
+  }
+
+  .ui-btn-ghost {
+    @apply inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm font-medium text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900;
+  }
+
+  .ui-link {
+    @apply font-medium text-indigo-600 hover:text-indigo-500;
+  }
+
+  .ui-table-wrap {
+    @apply overflow-hidden rounded-xl border border-zinc-200/80 bg-white shadow-card;
+  }
+
+  .ui-table {
+    @apply w-full text-left text-sm;
+  }
+
+  .ui-table thead {
+    @apply border-b border-zinc-200 bg-zinc-50/80;
+  }
+
+  .ui-table th {
+    @apply px-4 py-3 text-xs font-medium uppercase tracking-wide text-zinc-500;
+  }
+
+  .ui-table tbody tr {
+    @apply border-b border-zinc-100 transition hover:bg-zinc-50/80;
+  }
+
+  .ui-table td {
+    @apply px-4 py-3 text-zinc-700;
+  }
 }

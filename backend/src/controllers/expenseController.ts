@@ -17,7 +17,19 @@ const createSchema = z.object({
   description: z.string().optional(),
   date: z.coerce.date(),
   approvalRuleId: z.string().uuid().optional(),
-  ocrMetadata: z.record(z.unknown()).optional(),
+  /** Multipart sends JSON as a string */
+  ocrMetadata: z.preprocess((val) => {
+    if (val === undefined || val === null || val === '') return undefined;
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) return val;
+    if (typeof val === 'string') {
+      try {
+        return JSON.parse(val) as Record<string, unknown>;
+      } catch {
+        return undefined;
+      }
+    }
+    return undefined;
+  }, z.record(z.unknown()).optional()),
 });
 
 export const postExpense = asyncHandler(async (req: AuthRequest, res: Response) => {
